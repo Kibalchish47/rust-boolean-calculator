@@ -23,6 +23,7 @@
 use std::{
     io::Write,
     ops::{BitAnd, BitOr},
+    process::exit,
     str::FromStr,
 };
 
@@ -73,8 +74,6 @@ where
 {
     let mut input = String::new();
 
-    const A: usize = 1;
-
     loop {
         print!("{msg}");
         std::io::stdout().flush()?;
@@ -91,9 +90,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut memory: bool = true;
 
     println!("BOOLEAN EVALUATOR!");
-    println!("Special keywords (enter in the input sections): 'MEM' and 'not'");
-    println!("'MEM' -> use previous output in the input");
-    println!("'not' -> negates the input (i.e. 'not True' -> 'False')");
+    println!("Special keywords (enter in the input sections): 'mem', 'not', and 'exit'.");
+    println!("'MEM' -> use previous output in the input.");
+    println!("'not' -> negates the input (i.e. 'not True' -> 'False').");
+    println!("'exit' -> safely exits the program.");
 
     loop {
         let func = |s: &str| {
@@ -103,6 +103,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Ok(true)
             } else if s.to_uppercase() == "NOT TRUE" {
                 Ok(false)
+            } else if s.to_uppercase() == "EXIT" {
+                std::process::exit(0);
             } else {
                 Boolean::from_str(s)
             }
