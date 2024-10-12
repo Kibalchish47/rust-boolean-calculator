@@ -23,7 +23,6 @@
 use std::{
     io::Write,
     ops::{BitAnd, BitOr},
-    process::exit,
     str::FromStr,
 };
 
@@ -35,15 +34,24 @@ pub enum Operation {
     Or,
     Nand,
     Nor,
+    Xand,
+    Xor,
+    Xnand,
+    Xnor,
 }
 
 impl Operation {
     fn op(&self) -> fn(Boolean, Boolean) -> Boolean {
         match self {
+            // closures are not ideal here but they get the job done
             Operation::And => Boolean::bitand,
             Operation::Or => Boolean::bitor,
             Operation::Nand => |a, b| !(a & b),
-            Operation::Nor => |a, b| !(a | b), // not ideal
+            Operation::Nor => |a, b| !(a | b),
+            Operation::Xand => |a, b| !(a && b),
+            Operation::Xor => |a, b| (a ^ b),
+            Operation::Xnand => |a, b| !(a ^ b),
+            Operation::Xnor => |a, b| (a == b),
         }
     }
 }
@@ -59,6 +67,10 @@ impl FromStr for Operation {
             "or" => Operation::Or,
             "nand" => Operation::Nand,
             "nor" => Operation::Nor,
+            "xand" => Operation::Xand,
+            "xor" => Operation::Xor,
+            "xnand" => Operation::Xnand,
+            "xnor" => Operation::Xnor,
             _ => return Err(OperationParseError),
         })
     }
@@ -109,7 +121,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 Boolean::from_str(s)
             }
         };
-        println!("-------------------------------------------");
+        println!("-------------------------------------------------");
         let op: Operation = parse(
             "Enter the operation (and, or, nand, nor): ",
             Operation::from_str,
