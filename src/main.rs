@@ -123,7 +123,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
         println!("-------------------------------------------------");
         let op: Operation = parse(
-            "Enter the operation (and, or, nand, nor): ",
+            "Enter the operation (and, or, nand, nor, xand, xor, xnand, xnor): ",
             Operation::from_str,
         )?;
         let a: Boolean = parse("Enter the first input: ", func)?;
